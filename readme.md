@@ -63,7 +63,7 @@ Final Code: https://github.com/openedu101/foundry-basics/tree/01-simple-storage
 
 - Compile contract:
 
-```bash
+```
 forge compile
 ```
 

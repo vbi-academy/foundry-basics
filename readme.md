@@ -59,7 +59,7 @@ Foundry là một bộ công cụ phát triển smart contract cho Ethereum, đ�
 
 Code trong phần này sử dụng contract SimpleStorage trong khoá Solidity Basics: https://github.com/openedu101/solidity-basics/tree/01-remix-simple-storage
 
-Final Code: 
+Final Code: https://github.com/openedu101/foundry-basics/tree/01-simple-storage
 
 - Compile contract:
 
@@ -86,15 +86,24 @@ Có 2 cách để deploy:
 - Với `create`
 
 ```bash
-forge create --rpc-url http://127.0.0.1:8545 --interactive
+forge create SimpleStorage --rpc-url http://127.0.0.1:8545 --interactive
 ```
 
 ```bash
-forge create --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+forge create SimpleStorage --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 ```
+
+Cách sử dụng `--interactive` tốt hơn, không lưu private key dưới dạng plain text trong terminal.
 
 - Với `script`
 
 ```bash
-forge script
+forge script script/DeploySimpleStorage.s.sol --rpc-url http://127.0.0.1:8545 --broadcast --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+```
+
+#### Giải thích deploy transactions
+
+- Chuyển hex value thành decimal value: 
+```bash
+cast --to-base {hex} dec
 ```

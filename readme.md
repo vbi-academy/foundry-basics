@@ -53,7 +53,6 @@ Foundry là một bộ công cụ phát triển smart contract cho Ethereum, đ�
 - [Git](https://git-scm.com/)
 - [Foundry Documentation](https://book.getfoundry.sh/)
 - [Solidity - VSCode Extension](https://marketplace.visualstudio.com/items?itemName=JuanBlanco.solidity)
-- [Solidity Language & Themes - VSCode Extension](https://marketplace.visualstudio.com/items?itemName=tintinweb.vscode-solidity-language)
 
 ### Forge & Anvil
 

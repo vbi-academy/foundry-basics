@@ -100,9 +100,74 @@ Cách sử dụng `--interactive` tốt hơn, không lưu private key dưới d�
 forge script script/DeploySimpleStorage.s.sol --rpc-url http://127.0.0.1:8545 --broadcast --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 ```
 
+![Private Key Caution](.github/images/private-key-caution.png)
+
+#### Bảo mật private key với `cast wallet`
+
+- Tạo account mới để lưu trữ private key: 
+
+```bash
+cast wallet import <ACCOUNT_NAME> --interactive
+```
+
+- Xem danh sách các account đã tạo
+```bash
+cast wallet list
+```
+
 #### Giải thích deploy transactions
 
 - Chuyển hex value thành decimal value: 
 ```bash
 cast --to-base {hex} dec
 ```
+
+#### Tương tác với contract đã được deploy
+
+- Send transaction:
+```bash
+cast send <CONTRACT_ADDRESS> <FUNCTION_SIGNATURE> <ARGS> --rpc-url <YOUR_RPC_URL> --account <ACCOUNT_NAME>
+```
+
+- Call transaction:
+```bash
+cast call <CONTRACT_ADDRESS> <FUNCTION_SIGNATURE> <ARGS> --rpc-url <YOUR_RPC_URL>
+```
+
+#### Lấy RPC-URL trên Alchemy
+- [Alchemy](https://www.alchemy.com/)
+
+#### Deploy và verify contract trên Sepolia Testnet
+- [Sepolia Etherscan](https://sepolia.etherscan.io/)
+  
+- Ví dụ về contract đã được deploy và verify: [Simple Storage](https://sepolia.etherscan.io/address/0xee38c811f888a24b962c17539285c2daaad5bba8#code)
+
+- Sử dụng ENV file để bảo mật các giá trị riêng tư: [ENV Example](https://github.com/openedu101/foundry-basics/blob/01-simple-storage/.env.example)
+
+- Sử dụng ENV Variables trong terminal: 
+
+```bash
+source .env
+```
+
+```bash
+forge script script/DeploySimpleStorage.s.sol --rpc-url ${SEPOLIA_RPC_URL} --account <ACCOUNT_NAME> --broadcast 
+```
+
+- Verify contract:
+
+```bash
+forge verify-contract <CONTRACT_ADDRESS> <PATH>:<CONTRACT_NAME> --rpc-url ${SEPOLIA_RPC_URL} --etherscan-api-key ${ETHERSCAN_API_KEY}
+```
+
+- Verify contract khi deploy contract:
+```bash
+forge script script/DeploySimpleStorage.s.sol --rpc-url ${SEPOLIA_RPC_URL} --account <ACCOUNT_NAME> --broadcast  --verify --etherscan-api-key ${ETHERSCAN_API_KEY}
+```
+
+Lưu ý là nếu muốn verify contract trong khi deploy thì chỉ có thể sử dụng script bởi vì khi deploy thì script sẽ chứa luôn đường dẫn đến file của contract.
+
+#### Makefile
+
+- [Makefile Tutorial](https://makefiletutorial.com/)
+- [Cài Makefile cho Windows](https://medium.com/@samsorrahman/how-to-run-a-makefile-in-windows-b4d115d7c516)

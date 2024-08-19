@@ -1,0 +1,5 @@
+CrowdfundingTest:test_can_fund() (gas: 130013)
+CrowdfundingTest:test_can_withdraw() (gas: 172928)
+CrowdfundingTest:test_priceFeedSetCorrectly() (gas: 18677)
+CrowdfundingTest:test_revert_fund() (gas: 21329)
+CrowdfundingTest:test_revert_withdraw() (gas: 11406)

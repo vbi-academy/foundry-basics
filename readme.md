@@ -56,9 +56,9 @@ Foundry là một bộ công cụ phát triển smart contract cho Ethereum, đ�
 
 ### Forge & Anvil
 
-Code trong phần này sử dụng contract SimpleStorage trong khoá Solidity Basics: https://github.com/openedu101/solidity-basics/tree/01-remix-simple-storage
+Code trong phần này sử dụng contract SimpleStorage trong khoá Solidity Basics: [tại đây](https://github.com/openedu101/solidity-basics/tree/01-remix-simple-storage)
 
-Final Code: https://github.com/openedu101/foundry-basics/tree/01-simple-storage
+Final Code: [tại đây](https://github.com/openedu101/foundry-basics/tree/01-simple-storage)
 
 - Compile contract:
 
@@ -171,3 +171,22 @@ Lưu ý là nếu muốn verify contract trong khi deploy thì chỉ có thể s
 
 - [Makefile Tutorial](https://makefiletutorial.com/)
 - [Cài Makefile cho Windows](https://medium.com/@samsorrahman/how-to-run-a-makefile-in-windows-b4d115d7c516)
+
+## Section 2: Smart Contracts Testing w/ Foundry
+
+Code khởi đầu sử dụng contract `Crowdfunding` trong khoá Blockchain Basics:  [tại đây](https://github.com/openedu101/solidity-basics/tree/03-decentralized-crowdfunding)
+
+Final code: [tại đây](https://github.com/openedu101/foundry-basics/tree/02-decentralized-crowdfunding)
+
+Contract đã được deploy và verify: [tại đây](https://sepolia.etherscan.io/address/0x211402ce31ca3e7f4fa7008462d9f3c8b5c01ce7)
+
+### Các loại testing smart contract cơ bản
+
+1. Unit:
+   - Kiểm tra một phần cụ thể trong code.
+2. Integration:
+   - Kiểm tra hoạt động của code với các phần khác trong dự án.
+3. Forked:
+   - Kiểm tra code với giả lập môi trường thực tế.
+4. Staging:
+   - Kiểm tra code trong một môi trường thực tế (testnet) nhưng không phải production (mainnet).

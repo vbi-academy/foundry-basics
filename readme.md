@@ -174,7 +174,7 @@ Lưu ý là nếu muốn verify contract trong khi deploy thì chỉ có thể s
 
 ## Section 2: Smart Contracts Testing w/ Foundry
 
-Code khởi đầu sử dụng contract `Crowdfunding` trong khoá Blockchain Basics:  [tại đây](https://github.com/openedu101/solidity-basics/tree/03-decentralized-crowdfunding)
+Code khởi đầu sử dụng contract `Crowdfunding` trong khoá Blockchain Basics:  [tại đây](https://github.com/openedu101/solidity-basics/blob/04-decentralized-crowdfunding-final-code)
 
 Final code: [tại đây](https://github.com/openedu101/foundry-basics/tree/02-decentralized-crowdfunding)
 

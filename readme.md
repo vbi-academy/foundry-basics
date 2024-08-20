@@ -190,3 +190,12 @@ Contract đã được deploy và verify: [tại đây](https://sepolia.ethersca
    - Kiểm tra code với giả lập môi trường thực tế.
 4. Staging:
    - Kiểm tra code trong một môi trường thực tế (testnet) nhưng không phải production (mainnet).
+
+### Install Libraries
+
+- [Chainlink](https://github.com/smartcontractkit/chainlink)
+- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
+
+```
+forge install <GITHUB_LINK> --no-commit
+```

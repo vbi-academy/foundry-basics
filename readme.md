@@ -174,11 +174,35 @@ Lưu ý là nếu muốn verify contract trong khi deploy thì chỉ có thể s
 
 ## Section 2: Smart Contracts Testing w/ Foundry
 
-Code khởi đầu sử dụng contract `Crowdfunding` trong khoá Blockchain Basics:  [tại đây](https://github.com/openedu101/solidity-basics/blob/04-decentralized-crowdfunding-final-code)
+Code khởi đầu sử dụng contract `Crowdfunding` trong khoá Blockchain Basics: [tại đây](https://github.com/openedu101/solidity-basics/blob/04-decentralized-crowdfunding-final-code)
 
 Final code: [tại đây](https://github.com/openedu101/foundry-basics/tree/02-decentralized-crowdfunding)
 
 Contract đã được deploy và verify: [tại đây](https://sepolia.etherscan.io/address/0x211402ce31ca3e7f4fa7008462d9f3c8b5c01ce7)
+
+### Testing smart contracts là gì?
+
+Testing smart contract Solidity là quá trình kiểm tra, xác minh tính đúng đắn, an toàn và hiệu quả của mã nguồn smart contract được viết bằng ngôn ngữ lập trình Solidity. Quá trình này bao gồm việc viết và chạy các tập lệnh kiểm thử (test scripts) để mô phỏng các tình huống khác nhau mà hợp đồng thông minh có thể gặp phải trong thực tế. Mục tiêu của việc testing là đảm bảo rằng smart contract hoạt động chính xác theo yêu cầu, không có lỗi, và an toàn trước các lỗ hổng bảo mật.
+
+Xem top những dự án blockchain/web3 bị hack: https://rekt.news/leaderboard/
+
+### Tại sao cần phải testing smart contract Solidity?
+
+1. Ngăn ngừa lỗi: Smart contract quản lý các giao dịch và tài sản trên blockchain, nơi mà bất kỳ lỗi nào cũng có thể gây ra thiệt hại tài chính lớn. Testing giúp phát hiện và sửa chữa các lỗi trong mã nguồn trước khi triển khai lên blockchain.
+
+3. Đảm bảo bảo mật: Một khi smart contract đã được triển khai, nó không thể bị thay đổi. Nếu tồn tại lỗ hổng bảo mật, kẻ tấn công có thể lợi dụng để chiếm đoạt tài sản hoặc phá hoại hệ thống. Testing giúp phát hiện và loại bỏ các lỗ hổng này trước khi hợp đồng được sử dụng thực tế.
+
+4. Xác minh tính đúng đắn của logic: Smart contract thường chứa các logic phức tạp để thực hiện các chức năng như quản lý tài sản, thực hiện giao dịch, hoặc tuân thủ các quy định. Testing giúp xác minh rằng logic này hoạt động đúng như mong đợi trong mọi tình huống, bao gồm cả các tình huống ngoại lệ.
+
+5. Tối ưu hóa chi phí gas: Việc thực thi smart contract trên blockchain yêu cầu trả phí gas. Testing có thể giúp phát hiện các đoạn mã không tối ưu, từ đó giảm chi phí thực thi hợp đồng.
+
+6. Tuân thủ các tiêu chuẩn và quy định: Một số smart contract cần phải tuân thủ các tiêu chuẩn cụ thể (ví dụ như ERC-20 cho token trên Ethereum). Testing giúp đảm bảo rằng hợp đồng đáp ứng các tiêu chuẩn này.
+
+7. Tránh chi phí phát sinh không cần thiết: Việc sửa lỗi sau khi smart contract đã được triển khai có thể rất tốn kém, do phải triển khai lại hợp đồng và chi trả thêm phí gas. Testing giúp giảm thiểu khả năng xảy ra những sai lầm tốn kém này.
+
+8. Tăng độ tin cậy: Một smart contract đã được kiểm tra kỹ lưỡng sẽ tạo dựng được sự tin tưởng từ phía người dùng, nhà đầu tư, và các bên liên quan khác. Điều này là rất quan trọng trong môi trường blockchain, nơi mà niềm tin vào tính toàn vẹn và an toàn của mã nguồn là yếu tố sống còn.
+
+Việc testing smart contract Solidity là bước thiết yếu để đảm bảo rằng hợp đồng hoạt động đúng và an toàn, góp phần bảo vệ tài sản và xây dựng niềm tin trong cộng đồng người dùng blockchain.
 
 ### Các loại testing smart contract cơ bản
 

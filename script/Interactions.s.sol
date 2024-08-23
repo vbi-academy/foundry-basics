@@ -2,35 +2,35 @@
 pragma solidity 0.8.26;
 
 import {Script, console} from "forge-std/Script.sol";
-import {DevOpsTools} from "foundry-devops/src/DevOpsTools.sol";
+import {DevOpsTools} from "lib/foundry-devops/src/DevOpsTools.sol";
 import {Crowdfunding} from "src/Crowdfunding.sol";
 
 contract FundCrowdfunding is Script {
-    uint256 SEND_VALUE = 0.1 ether;
-
-    function fundToCrowdfunding(address mostRecentlyDeployed) public {
+    function fundToCrowdfunding(address crowdfundingAddress) public {
         vm.startBroadcast();
-        Crowdfunding(payable(mostRecentlyDeployed)).fund{value: SEND_VALUE}();
+        Crowdfunding(payable(crowdfundingAddress)).fund{value: 0.01 ether}();
         vm.stopBroadcast();
-        console.log("Funded to Crowdfunding with %s", SEND_VALUE);
+
+        console.log("Fund to Crowdfunding contract success!");
     }
 
     function run() external {
-        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment("Crowdfunding", block.chainid);
-        fundToCrowdfunding(mostRecentlyDeployed);
+        address contractAddress = DevOpsTools.get_most_recent_deployment("Crowdfunding", block.chainid);
+        fundToCrowdfunding(contractAddress);
     }
 }
 
 contract WithdrawCrowdfunding is Script {
-    function withdrawFromCrowdfunding(address mostRecentlyDeployed) public {
+    function withdrawFromCrowdfunding(address crowdfundingAddress) public {
         vm.startBroadcast();
-        Crowdfunding(payable(mostRecentlyDeployed)).withdraw();
+        Crowdfunding(payable(crowdfundingAddress)).withdraw();
         vm.stopBroadcast();
-        console.log("Withdraw FundMe balance!");
+
+        console.log("Withdraw from Crowdfunding contract success!");
     }
 
     function run() external {
-        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment("Crowdfunding", block.chainid);
-        withdrawFromCrowdfunding(mostRecentlyDeployed);
+        address contractAddress = DevOpsTools.get_most_recent_deployment("Crowdfunding", block.chainid);
+        withdrawFromCrowdfunding(contractAddress);
     }
 }

@@ -1,17 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {Script} from "forge-std/Script.sol";
+import {Script, console} from "forge-std/Script.sol";
 import {Crowdfunding} from "src/Crowdfunding.sol";
-import {HelperConfig} from "script/HelperConfig.s.sol";
+import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployCrowdfunding is Script {
+    Crowdfunding crowdfunding;
+    HelperConfig helperConfig;
+
     function run() external returns (Crowdfunding, HelperConfig) {
-        HelperConfig helperConfig = new HelperConfig();
-        address priceFeed = helperConfig.getConfigByChainId(block.chainid).priceFeed;
+        helperConfig = new HelperConfig();
+        address ethUsdPriceFeed = helperConfig.getNetworkConfig(block.chainid).ethUsdPriceFeed;
+
+        console.log("ETH/USD price feed address: ", ethUsdPriceFeed);
 
         vm.startBroadcast();
-        Crowdfunding crowdfunding = new Crowdfunding(priceFeed);
+        crowdfunding = new Crowdfunding(ethUsdPriceFeed);
         vm.stopBroadcast();
 
         return (crowdfunding, helperConfig);

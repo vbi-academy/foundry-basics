@@ -11,12 +11,11 @@ contract Crowdfunding is Ownable {
     error InsufficientFunding();
 
     uint256 public constant MINIMUM_USD = 5e18; // 5 USD in Wei
+    address public immutable i_ethUsdPriceFeed;
 
     mapping(address => bool) public s_isFunders;
     mapping(address => uint256) public s_funderToAmount;
     address[] public s_funders;
-
-    address public immutable i_ethPriceFeed;
 
     event Funded(address indexed funder, uint256 value);
     event Withdrawn(uint256 value);
@@ -29,12 +28,12 @@ contract Crowdfunding is Ownable {
         fund();
     }
 
-    constructor(address ethPriceFeed) Ownable(msg.sender) {
-        i_ethPriceFeed = ethPriceFeed;
+    constructor(address ethUsdPriceFeed) Ownable(msg.sender) {
+        i_ethUsdPriceFeed = ethUsdPriceFeed;
     }
 
     function fund() public payable {
-        if (i_ethPriceFeed.getConversionRate(msg.value) < MINIMUM_USD) {
+        if (i_ethUsdPriceFeed.getConversionRate(msg.value) < MINIMUM_USD) {
             revert InsufficientFunding();
         }
 
@@ -57,7 +56,8 @@ contract Crowdfunding is Ownable {
         emit Withdrawn(withdrawBal);
     }
 
-    function getETHPriceFeedVersion() public view returns (uint256) {
-        return AggregatorV3Interface(i_ethPriceFeed).version();
+    // Tìm ra có bao nhiêu người đã đóng góp
+    function getFundersLength() public view returns (uint256) {
+        return s_funders.length;
     }
 }

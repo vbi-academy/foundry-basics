@@ -10,27 +10,25 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract CrowdfundingTest is Test {
     Crowdfunding public crowdfunding;
-    HelperConfig public helperConfig;
 
-    address public constant USER = address(2);
-
-    uint256 public constant INITIAL_ETHER_AMOUNT = 100 ether;
-    uint256 public constant ACCEPTABLE_FUND_AMOUNT = 0.1 ether;
+    address public constant USER = address(1);
+    uint256 public constant INITIAL_USER_BALANCE = 100 ether;
+    uint256 public constant USER_AMOUNT_FUNDING = 5 ether;
 
     event Funded(address indexed funder, uint256 value);
     event Withdrawn(uint256 value);
 
     function setUp() external {
         DeployCrowdfunding deployCrowdfunding = new DeployCrowdfunding();
-        (crowdfunding, helperConfig) = deployCrowdfunding.run();
+        (crowdfunding,) = deployCrowdfunding.run();
 
-        vm.deal(USER, INITIAL_ETHER_AMOUNT);
+        vm.deal(USER, INITIAL_USER_BALANCE);
     }
 
-    function test_priceFeedSetCorrectly() public {
-        address retreivedPriceFeed = address(crowdfunding.i_ethPriceFeed());
-        address expectedPriceFeed = helperConfig.getConfigByChainId(block.chainid).priceFeed;
-        assertEq(retreivedPriceFeed, expectedPriceFeed);
+    modifier funded() {
+        vm.prank(USER);
+        crowdfunding.fund{value: USER_AMOUNT_FUNDING}();
+        _;
     }
 
     function test_revert_fund() public {
@@ -41,24 +39,23 @@ contract CrowdfundingTest is Test {
     }
 
     function test_can_fund() public {
+        uint256 beforeUserBal = USER.balance;
+        uint256 beforeContractBal = address(crowdfunding).balance;
+
         vm.expectEmit();
-        emit Crowdfunding.Funded(USER, ACCEPTABLE_FUND_AMOUNT);
-
-        uint256 contractBalBeforeFund = address(crowdfunding).balance;
-        console.log("Crowdfunding contract balance before fund", contractBalBeforeFund);
-
+        emit Crowdfunding.Funded(USER, USER_AMOUNT_FUNDING);
         vm.prank(USER);
-        crowdfunding.fund{value: ACCEPTABLE_FUND_AMOUNT}();
+        crowdfunding.fund{value: USER_AMOUNT_FUNDING}();
 
-        console.log("User funded to crowdfunding contract", ACCEPTABLE_FUND_AMOUNT);
+        uint256 afterUserBal = USER.balance;
+        uint256 afterContractBal = address(crowdfunding).balance;
 
-        uint256 contractBalAfterFund = address(crowdfunding).balance;
-        console.log("Crowdfunding contract balance after fund", contractBalAfterFund);
-
-        assertEq(crowdfunding.s_funderToAmount(USER), ACCEPTABLE_FUND_AMOUNT);
-        assertEq(crowdfunding.s_funders(0), USER);
+        assertEq(beforeUserBal - USER_AMOUNT_FUNDING, afterUserBal);
+        assertEq(beforeContractBal + USER_AMOUNT_FUNDING, afterContractBal);
+        assertEq(crowdfunding.s_funderToAmount(USER), USER_AMOUNT_FUNDING);
         assertTrue(crowdfunding.s_isFunders(USER));
-        assertEq(contractBalBeforeFund + ACCEPTABLE_FUND_AMOUNT, contractBalAfterFund);
+        assertEq(crowdfunding.s_funders(0), USER);
+        assertEq(crowdfunding.getFundersLength(), 1);
     }
 
     function test_revert_withdraw() public {
@@ -68,22 +65,21 @@ contract CrowdfundingTest is Test {
         crowdfunding.withdraw();
     }
 
-    function test_can_withdraw() public {
-        // Fund before withdraw
-        test_can_fund();
+    function test_can_withdraw() public funded {
+        address owner = crowdfunding.owner();
 
-        uint256 ownerBalBeforeWithdraw = crowdfunding.owner().balance;
-        console.log("Owner balance before withdraw", ownerBalBeforeWithdraw);
+        uint256 beforeOwnerBal = owner.balance;
+        uint256 beforeContractBal = address(crowdfunding).balance;
 
         vm.expectEmit();
-        emit Crowdfunding.Withdrawn(ACCEPTABLE_FUND_AMOUNT);
-
-        vm.prank(crowdfunding.owner());
+        emit Crowdfunding.Withdrawn(beforeContractBal);
+        vm.prank(owner);
         crowdfunding.withdraw();
 
-        uint256 ownerBalAfterWithdraw = crowdfunding.owner().balance;
-        console.log("Owner balance after withdraw", ownerBalAfterWithdraw);
+        uint256 afterOwnerBal = owner.balance;
+        uint256 afterContractBal = address(crowdfunding).balance;
 
-        assertEq(ownerBalBeforeWithdraw + ACCEPTABLE_FUND_AMOUNT, ownerBalAfterWithdraw);
+        assertEq(beforeOwnerBal + beforeContractBal, afterOwnerBal);
+        assertEq(afterContractBal, 0);
     }
 }

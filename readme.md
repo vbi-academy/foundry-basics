@@ -178,7 +178,7 @@ Code khởi đầu sử dụng contract `Crowdfunding` trong khoá Blockchain Ba
 
 Final code: [tại đây](https://github.com/openedu101/foundry-basics/tree/02-decentralized-crowdfunding)
 
-Contract đã được deploy và verify: [tại đây](https://sepolia.etherscan.io/address/0x211402ce31ca3e7f4fa7008462d9f3c8b5c01ce7)
+Contract đã được deploy và verify: [tại đây](https://sepolia.etherscan.io/address/0x0fbd1bcb43b42f8cbc1349d012cbb940bf8cf10b)
 
 ### Testing smart contracts là gì?
 
@@ -221,5 +221,5 @@ Việc testing smart contract Solidity là bước thiết yếu để đảm b�
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
 
 ```
-forge install <GITHUB_LINK> --no-commit
+forge install <GITHUB_LINK>:<VERSION> --no-commit
 ```

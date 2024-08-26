@@ -4,10 +4,11 @@ import { BrowserProvider } from "ethers";
 import { contractABI, contractAddr } from "./contractData";
 import { TransactionResponse } from "ethers";
 import { FundedEvent } from "@/lib/type";
+import { AlchemyProvider } from "ethers";
 
 // Read contract
 export const getContractBalance = async (
-  ethersProvider: BrowserProvider,
+  ethersProvider: BrowserProvider | AlchemyProvider,
   contract: string
 ) => {
   try {
@@ -18,7 +19,9 @@ export const getContractBalance = async (
   }
 };
 
-export const getFundersLength = async (ethersProvider: BrowserProvider) => {
+export const getFundersLength = async (
+  ethersProvider: BrowserProvider | AlchemyProvider
+) => {
   try {
     const crowdfundingContract = new Contract(
       contractAddr,
@@ -32,7 +35,9 @@ export const getFundersLength = async (ethersProvider: BrowserProvider) => {
   }
 };
 
-export const getFundedEvents = async (ethersProvider: BrowserProvider) => {
+export const getFundedEvents = async (
+  ethersProvider: BrowserProvider | AlchemyProvider
+) => {
   try {
     const crowdfundingContract = new Contract(
       contractAddr,

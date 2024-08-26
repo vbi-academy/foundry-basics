@@ -25,3 +25,4 @@ dist-ssr
 
 # Eviroment Variables
 .env
+.vercel

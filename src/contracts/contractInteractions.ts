@@ -43,7 +43,7 @@ export const getFundedEvents = async (ethersProvider: BrowserProvider) => {
       fundedEventFilter,
       10000
     );
-    console.log(fundedEvents);
+
     const events = [];
 
     for (let i = 0; i < fundedEvents.length; i++) {

@@ -3,6 +3,7 @@ import { JsonRpcSigner } from "ethers";
 import { BrowserProvider } from "ethers";
 import { contractABI, contractAddr } from "./contractData";
 import { TransactionResponse } from "ethers";
+import { FundedEvent } from "@/lib/type";
 
 // Read contract
 export const getContractBalance = async (
@@ -44,7 +45,7 @@ export const getFundedEvents = async (ethersProvider: BrowserProvider) => {
       10000
     );
 
-    const events = [];
+    const events: FundedEvent[] = [];
 
     for (let i = 0; i < fundedEvents.length; i++) {
       const currentEvent = fundedEvents[i];

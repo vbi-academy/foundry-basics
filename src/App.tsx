@@ -1,4 +1,4 @@
-import { ExternalLink, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import Card from "./components/Card";
 import { MainLayout } from "./layouts/MainLayout";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers/react";
@@ -11,7 +11,8 @@ import {
 } from "./contracts/contractInteractions";
 import { contractAddr } from "./contracts/contractData";
 import FundCard from "./components/FundCard";
-import { shortenAddress } from "./lib/utils";
+import LatestDonation from "./components/LatestDonation";
+import { FundedEvent } from "./lib/type";
 
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 
@@ -48,7 +49,7 @@ function App() {
   const { provider } = useEthers();
   const [crowdfBalance, setCrowdfBalance] = useState<string | null>(null);
   const [funders, setFunders] = useState<number | null>(null);
-  const [latestEvents, setLatestEvents] = useState<any | null>(null);
+  const [latestEvents, setLatestEvents] = useState<FundedEvent[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchCrowfundingInfor = async () => {
@@ -60,7 +61,7 @@ function App() {
         const events = await getFundedEvents(provider);
         setCrowdfBalance(balance);
         setFunders(funders);
-        setLatestEvents(events);
+        if (events) setLatestEvents(events);
       }
     } finally {
       setIsLoading(false);
@@ -96,51 +97,7 @@ function App() {
         <FundCard fetchContractInfor={fetchCrowfundingInfor} />
       </div>
 
-      <div className="py-4">
-        <h2 className="font-semibold">Latest Donation</h2>
-        <div className="mt-4 space-y-3">
-          {isLoading && <LoaderCircle className="animate-spin" />}
-          {!isLoading && !latestEvents && (
-            <p className="text-sm">No data to show.</p>
-          )}
-          {!isLoading &&
-            latestEvents &&
-            latestEvents.map((item: any) => (
-              <Card
-                key={item.txHash}
-                className="shadow-none flex justify-between gap-2 items-center"
-              >
-                <div>
-                  <span className="text-sm">Funder:</span>
-
-                  <a
-                    target="_blank"
-                    href={`https://sepolia.etherscan.io/address/${item.funder}`}
-                    className="flex items-center gap-1 hover:underline transition-all"
-                  >
-                    {shortenAddress(item.funder)}
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-sm">Value:</span>
-                  <p>{item.value} ETH</p>
-                </div>
-                <div>
-                  <span className="text-sm">Transaction:</span>
-                  <a
-                    target="_blank"
-                    href={`https://sepolia.etherscan.io/tx/${item.txHash}`}
-                    className="flex items-center gap-1 hover:underline transition-all"
-                  >
-                    {shortenAddress(item.txHash)}
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
-              </Card>
-            ))}
-        </div>
-      </div>
+      <LatestDonation isLoading={isLoading} latestEvents={latestEvents} />
     </MainLayout>
   );
 }

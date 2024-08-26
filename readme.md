@@ -215,11 +215,129 @@ Việc testing smart contract Solidity là bước thiết yếu để đảm b�
 4. Staging:
    - Kiểm tra code trong một môi trường thực tế (testnet) nhưng không phải production (mainnet).
 
-### Install Libraries
+### Dependencies (Phần Phụ Thuộc)
+
+Hoặc mình hay gọi là Libraries, hoặc một Project,... sao cũng được.
+
+#### Install
+Để cài đặt một dependency thì bạn hãy chạy lệnh `forge install`. Tuy nhiên, bạn nên nhớ chỉ định version để code trong phần này và code của bạn match với nhau. Vì sau này có thể có nhiều bản cập nhận cho dependencies chúng ta muốn cài đặt, và nếu không chỉ định version thì mặc định cài bản mới nhất.
+
+```bash
+forge install <GITHUB_LINK>:<VERSION> --no-commit
+```
 
 - [Chainlink](https://github.com/smartcontractkit/chainlink)
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
+- [Foundry DevOps](https://github.com/Cyfrin/foundry-devops)
+  
+#### Remappings
+
+Docs: [tại đây](https://book.getfoundry.sh/projects/dependencies?highlight=remappings#remapping-dependencies)
+
+Thư viện `forge` có thể tự remap dependencies (ánh xạ lại các phụ thuộc) để import links gọn hơn. Bằng cách chạy `forge remappings` bạn có thể nhìn thấy những remap tự động.
+
+```bash
+$ forge remappings
+```
+
+Kết quả:
+```
+forge-std/=lib/forge-std/src/
+```
+
+Remappings trên có ý nghĩa là:
+- Để import từ `forge-std` chúng ta có thể ghi: 
+  -  `import "forge-std/Contract.sol";` chứ không cần phải `import "lib/forge-std/src/Contract.sol`;
+
+Bạn có thể tự custom remapping những phần phụ thuộc mà bạn muốn bằng cách thêm trường `remappings` vào `foundry.toml`:
 
 ```
-forge install <GITHUB_LINK>:<VERSION> --no-commit
+remappings = ["@chainlink=lib/chainlink", "@solmate-utils/=lib/solmate/src/utils/"]
 ```
+
+### Forge Test
+
+#### Thiết lập Test File
+
+- [Document](https://book.getfoundry.sh/forge/tests)
+
+Nếu bạn chưa quen với việc testing (trong bất kỳ ngôn ngữ hay công nghệ nào). Thì bên trong test file sẽ có các function (hoặc method) được gọi là những **test case**. 
+
+Trong Foundry, các Test File sẽ được đặt trong folder `test/` và được kết thúc bằng `.t.sol`.
+
+Bất kỳ contract nào có tên khởi đầu với chữ `test` sẽ được thư viện forge xem là một test case và chạy nó.
+
+##### Run Test
+
+Để chạy test bạn sử dụng command:
+```
+forge test
+```
+
+Để chạy một test case nhất định:
+
+```
+forge test --match-test <TEST_NAME>
+```
+
+Alias: --mt
+
+Để chạy một file test nhất định:
+```
+forge test --math-path <PATH_TO_FILE>
+```
+
+Alias: --mp
+
+#### Logs
+
+Nếu trong test file có function `console.log()` thì có thể dùng để xem log ra những biến (hoặc kết quả) mà mình muốn.
+
+Để xem log thì hãy thêm cờ `-v` vào lệnh commnand `forge test`. Dưới đây là các level logs, mỗi level cao hơn sẽ có các tính năng của các level thấp hơn.
+
+- Mức 2 ( -vv) : Logs được emmitted khi chạy tests. 
+- Mức 3 ( -vvv) : Stack traces (như mình hay nói là "luồng chạy") sẽ được hiển thị cho những test case nào thất bại.
+- Mức 4 ( -vvvv) : Hiển thị stack traces cho mọi luồng chạy, bao gồm setup, test thành công và test thất bại.
+
+### Fork Test
+
+- [Document](https://book.getfoundry.sh/forge/fork-testing)
+
+Fork Test hay còn gọi là mô phỏng môi trường. Giúp việc chạy test trên một bản sao ảo của blockchain tại một thời điểm cụ thể. Điều này giúp bạn có một môi trường testing gần giống với thực tế.
+
+Khi mà chúng ta chạy lệnh `forge test` bên trên, forge sẽ tự động tạo cho chúng ta một môi trường local Anvil Chain và chạy những test case của chúng ta trên đó. 
+
+Để chạy fork test chúng ta chỉ cần thêm flag `--fork-url` và khai báo RPC_URL của EVM chain mà bạn muốn.
+
+```
+forge test --fork-url <RPC_URL>
+```
+
+Nếu chúng ta chạy fork test thì chúng ta có thể tương tác với những hợp đồng đã được deploy. Còn nếu không? những hợp đồng chúng ta cần dưới local để tương tác thì chúng ta có thể thông qua một **Mock Contract**.
+
+### Mock Contract
+
+Mock Contract tạo ra một phiên bản giả lập của một contract nào đó mà chúng ta cần. Mock contract mô phỏng hành vi của contract thật (có thể đã được deploy hoặc của một hệ thống khác).
+
+Mock contract giúp chúng ta cô lập unit test dưới local, chỉ tập trung test một test case duy nhất mà không ảnh hưởng nhiều bởi các yếu tố bên ngoài.
+
+Nếu sử dụng mock contract được, thì chúng ta không cần chạy fork test với hợp đồng đã được deploy, giúp tiết kiệm thời gian.
+
+Mock contract giúp tạo ra những tình huống mà hiện tại trong thực tế, contract được mock (được deploy) không tồn tại tình huống đó để chúng ta chạy test case cho tình huống đó. Ví dụ: giá thực tế của ETH là 3000USD/ETH, nhưng chúng ta muốn test trường hợp giá ETH là 30,000USD/ETH thì chúng ta sử dụng mock test cho các aggregator contract thì mới làm được điều đó.
+
+## Coverage (độ bao phủ test)
+
+Chạy lệnh
+
+```
+forge coverage
+```
+
+giúp chúng ta đo lường mức độ bao phủ của các test case đối với toàn bộ mã nguồn.
+
+- Line Coverage: Số dòng mã được thực thi.
+- Branch coverage: Số nhánh điều kiện được kiểm tra.
+- Function coverage: Số hàm được gọi trong quá trình kiểm thử.
+
+Nếu quá khó để handle thì chúng ta chỉ cần quan tâm đến function coverage, test đầy đủ hết đầu ra và đầu vào của một function.
+

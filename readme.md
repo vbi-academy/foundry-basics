@@ -22,6 +22,35 @@ Tiếp nối khoá học [Solidity Basics](https://github.com/openedu101/solidit
 
 Group hỗ trợ: <a href="https://discord.gg/htjprg2Puy" style="text-decoration: underline;">Solidity Developer Vietnam</a>
 
+- [Mở đầu](#mở-đầu)
+- [Section 1: Local Development w/ Foundry](#section-1-local-development-w-foundry)
+  - [Cài đặt Foundry \& Thiết lập môi trường phát triển](#cài-đặt-foundry--thiết-lập-môi-trường-phát-triển)
+  - [Forge \& Anvil](#forge--anvil)
+    - [Deploy contract lên mạng local](#deploy-contract-lên-mạng-local)
+    - [Bảo mật private key với `cast wallet`](#bảo-mật-private-key-với-cast-wallet)
+    - [Giải thích deploy transactions](#giải-thích-deploy-transactions)
+    - [Tương tác với contract đã được deploy](#tương-tác-với-contract-đã-được-deploy)
+    - [Lấy RPC-URL trên Alchemy](#lấy-rpc-url-trên-alchemy)
+    - [Deploy và verify contract trên Sepolia Testnet](#deploy-và-verify-contract-trên-sepolia-testnet)
+    - [Makefile](#makefile)
+- [Section 2: Smart Contracts Testing w/ Foundry](#section-2-smart-contracts-testing-w-foundry)
+  - [Testing smart contracts là gì?](#testing-smart-contracts-là-gì)
+  - [Tại sao cần phải testing smart contract Solidity?](#tại-sao-cần-phải-testing-smart-contract-solidity)
+  - [Các loại testing smart contract cơ bản](#các-loại-testing-smart-contract-cơ-bản)
+  - [Dependencies (Phần Phụ Thuộc)](#dependencies-phần-phụ-thuộc)
+    - [Install](#install)
+    - [Remappings](#remappings)
+  - [Forge Test](#forge-test)
+    - [Thiết lập Test File](#thiết-lập-test-file)
+      - [Run Test](#run-test)
+    - [Logs](#logs)
+  - [Fork Test](#fork-test)
+  - [Mock Contract](#mock-contract)
+- [Coverage (độ bao phủ test)](#coverage-độ-bao-phủ-test)
+- [Section 3: Full Stack Web3 Developer with Decentralized Crowdfunding's Interface](#section-3-full-stack-web3-developer-with-decentralized-crowdfundings-interface)
+  - [Tech Stack](#tech-stack)
+
+
 ## Section 1: Local Development w/ Foundry
 
 Foundry là một bộ công cụ phát triển smart contract cho Ethereum, được viết bằng Rust. Nó được thiết kế để hỗ trợ việc phát triển, kiểm thử và triển khai smart contract Solidity một cách hiệu quả.
@@ -340,4 +369,22 @@ giúp chúng ta đo lường mức độ bao phủ của các test case đối v
 - Function coverage: Số hàm được gọi trong quá trình kiểm thử.
 
 Nếu quá khó để handle thì chúng ta chỉ cần quan tâm đến function coverage, test đầy đủ hết đầu ra và đầu vào của một function.
+
+## Section 3: Full Stack Web3 Developer with Decentralized Crowdfunding's Interface
+
+Contract trong phần này là contract chúng ta đã hoàn thiện trong phần trước, đã được mình verify và deploy [tại đây](https://sepolia.etherscan.io/address/0x0fBd1Bcb43B42f8CBc1349D012cbB940bf8Cf10B).
+
+Giao diện đã được hoàn thiện và deploy: https://crowdfunding-interface.vercel.app/
+
+> Lưu ý: Yêu cầu tiên quyết trong phần này là bạn phải có kiến thức về việc phát triển Front-end với thư viện React. Mình sẽ dùng ngôn ngữ TypeScript trong phần này, nhưng nếu bạn có sử dụng JavaScript thì cũng có thể follow không vấn đề gì cả.
+
+### Tech Stack
+
+Những thư viện và công cụ được sử dụng trong phần này:
+
+- Ngôn ngữ: [TypeScript](https://www.typescriptlang.org/)
+- Library: [React](https://react.dev/)
+- Build Tool: [Vite](https://vitejs.dev/)
+- CSS: [TailwindCSS](https://tailwindcss.com/)
+
 

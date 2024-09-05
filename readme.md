@@ -49,7 +49,7 @@ Group hỗ trợ: <a href="https://discord.gg/htjprg2Puy" style="text-decoration
 - [Coverage (độ bao phủ test)](#coverage-độ-bao-phủ-test)
 - [Section 3: Full Stack Web3 Developer with Decentralized Crowdfunding's Interface](#section-3-full-stack-web3-developer-with-decentralized-crowdfundings-interface)
   - [Tech Stack](#tech-stack)
-- [Section 4: Lottery Contracts](#section-4-lottery-contracts)
+- [Section 4: Lottery Contract](#section-4-lottery-contract)
   - [Solidity Code Style](#solidity-code-style)
   - [Chainlink VRF \& Chainlink Automation](#chainlink-vrf--chainlink-automation)
   - [CEI Design Pattern (Checks - Effects - Interactions)](#cei-design-pattern-checks---effects---interactions)
@@ -393,7 +393,7 @@ Những thư viện và công cụ được sử dụng trong phần này:
 - Icon: [Lucide Icon](https://lucide.dev/)
 - [Ethers](https://docs.ethers.org/v6/)
 
-## Section 4: Lottery Contracts
+## Section 4: Lottery Contract
 
 Final Code: [tại đây](https://github.com/openedu101/foundry-basics/tree/04-lottery-contract)
 

@@ -14,12 +14,18 @@ contract HelperConfig is Script, Constants {
         address vrfCoordinator;
         bytes32 keyHash;
         address linkToken;
+        uint256 automationInterval;
     }
 
+    NetworkConfig public localNetworkConfig;
     mapping(uint256 chainId => NetworkConfig) public s_networkConfigs;
 
     constructor() {
         s_networkConfigs[ETH_SEPOLIA_CHAIN_ID] = getSepoliaNetworkConfig();
+    }
+
+    function getConfig() public returns (NetworkConfig memory) {
+        return getNetworkConfig(block.chainid);
     }
 
     function getSepoliaNetworkConfig() public pure returns (NetworkConfig memory) {
@@ -27,11 +33,16 @@ contract HelperConfig is Script, Constants {
             subscriptionId: 8814394195559258022317326756562587244149941707711830749661523845280446415580,
             vrfCoordinator: 0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B,
             keyHash: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
-            linkToken: 0x779877A7B0D9E8603169DdbD7836e478b4624789
+            linkToken: 0x779877A7B0D9E8603169DdbD7836e478b4624789,
+            automationInterval: 30
         });
     }
 
     function getLocalNetworkConfig() public returns (NetworkConfig memory) {
+        if (localNetworkConfig.vrfCoordinator != address(0)) {
+            return localNetworkConfig;
+        }
+
         vm.startBroadcast();
         VRFCoordinatorV2_5Mock vrfCoordinatorV2_5Mock =
             new VRFCoordinatorV2_5Mock(MOCK_VRF_BASE_FEE, MOCK_VRF_GAS_PRICE, MOCK_VRF_WEI_PER_UINT);
@@ -39,12 +50,15 @@ contract HelperConfig is Script, Constants {
         MockLinkToken linkToken = new MockLinkToken();
         vm.stopBroadcast();
 
-        return NetworkConfig({
+        localNetworkConfig = NetworkConfig({
             subscriptionId: newSubscriptionId,
             vrfCoordinator: address(vrfCoordinatorV2_5Mock),
             keyHash: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
-            linkToken: address(linkToken)
+            linkToken: address(linkToken),
+            automationInterval: 30
         });
+
+        return localNetworkConfig;
     }
 
     function getNetworkConfig(uint256 chainId) public returns (NetworkConfig memory) {

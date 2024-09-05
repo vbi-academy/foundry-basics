@@ -7,7 +7,7 @@ import {Lottery} from "src/Lottery.sol";
 import {HelperConfig} from "script/HelperConfig.s.sol";
 
 contract DeployLottery is Script, Constants {
-    function run() external returns (Lottery) {
+    function run() external returns (Lottery, HelperConfig) {
         HelperConfig helperConfig = new HelperConfig();
         HelperConfig.NetworkConfig memory networkConfig = helperConfig.getNetworkConfig(block.chainid);
         vm.startBroadcast();
@@ -16,9 +16,10 @@ contract DeployLottery is Script, Constants {
             networkConfig.subscriptionId,
             networkConfig.vrfCoordinator,
             networkConfig.keyHash,
-            CALLBACK_GAS_LIMIT
+            CALLBACK_GAS_LIMIT,
+            networkConfig.automationInterval
         );
         vm.stopBroadcast();
-        return lottery;
+        return (lottery, helperConfig);
     }
 }

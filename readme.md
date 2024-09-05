@@ -49,6 +49,10 @@ Group hỗ trợ: <a href="https://discord.gg/htjprg2Puy" style="text-decoration
 - [Coverage (độ bao phủ test)](#coverage-độ-bao-phủ-test)
 - [Section 3: Full Stack Web3 Developer with Decentralized Crowdfunding's Interface](#section-3-full-stack-web3-developer-with-decentralized-crowdfundings-interface)
   - [Tech Stack](#tech-stack)
+- [Section 4: Lottery Contracts](#section-4-lottery-contracts)
+  - [Solidity Code Style](#solidity-code-style)
+  - [Chainlink VRF \& Chainlink Automation](#chainlink-vrf--chainlink-automation)
+  - [CEI Design Pattern (Checks - Effects - Interactions)](#cei-design-pattern-checks---effects---interactions)
 
 
 ## Section 1: Local Development w/ Foundry
@@ -389,3 +393,45 @@ Những thư viện và công cụ được sử dụng trong phần này:
 - Icon: [Lucide Icon](https://lucide.dev/)
 - [Ethers](https://docs.ethers.org/v6/)
 
+## Section 4: Lottery Contracts
+
+Trong phần này, chúng ta sẽ xây dựng một contract phục vụ cho việc chơi xổ số với các tính năng như sau:
+- Cho phép người chơi tham gia vào cuộc chơi mà một ngày sẽ xổ số 1 lần (có thể thiết lập thời gian).
+- Khi đến thời gian cho phép, contract sẽ tự động được kích hoạt và sẽ tìm ra 1 người chiến thắng bằng Chainlink VRF.
+
+### Solidity Code Style
+
+- [Chainlink Solidity Style Guide](https://github.com/smartcontractkit/chainlink/blob/develop/contracts/STYLE_GUIDE.md)
+
+Layouts of Contract:
+```solidity
+// Layout of Contract:
+// version
+// imports
+// errors
+// interfaces, libraries, contracts
+// Type declarations
+// State variables
+// Events
+// Modifiers
+// Functions
+
+// Layout of Functions:
+// constructor
+// receive function (if exists)
+// fallback function (if exists)
+// external
+// public
+// internal
+// private
+// view & pure functions
+```
+
+### Chainlink VRF & Chainlink Automation
+
+- [Chainlink VRF](https://chain.link/vrf)
+- [Chainlink Automation](https://chain.link/automation)
+
+### CEI Design Pattern (Checks - Effects - Interactions)
+
+- [CEI - Checks Effects Interactions Video](https://youtu.be/eGPWd7XvcaQ?t=5151)

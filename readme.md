@@ -386,5 +386,6 @@ Những thư viện và công cụ được sử dụng trong phần này:
 - Library: [React](https://react.dev/)
 - Build Tool: [Vite](https://vitejs.dev/)
 - CSS: [TailwindCSS](https://tailwindcss.com/)
-
+- Icon: [Lucide Icon](https://lucide.dev/)
+- [Ethers](https://docs.ethers.org/v6/)
 

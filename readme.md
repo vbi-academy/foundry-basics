@@ -395,6 +395,8 @@ Những thư viện và công cụ được sử dụng trong phần này:
 
 ## Section 4: Lottery Contracts
 
+Final Code: [tại đây](https://github.com/openedu101/foundry-basics/tree/04-lottery-contract)
+
 Trong phần này, chúng ta sẽ xây dựng một contract phục vụ cho việc chơi xổ số với các tính năng như sau:
 - Cho phép người chơi tham gia vào cuộc chơi mà một ngày sẽ xổ số 1 lần (có thể thiết lập thời gian).
 - Khi đến thời gian cho phép, contract sẽ tự động được kích hoạt và sẽ tìm ra 1 người chiến thắng bằng Chainlink VRF.

@@ -3,17 +3,20 @@ pragma solidity 0.8.26;
 
 import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
+import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/automation/AutomationCompatible.sol";
 
 /// @title Lottery Contract
 /// @author terrancrypt
 /// @notice Used for users to open lottery game, a random player will get all rewards
 /// @dev Use Chainlink Oracle for random number generation and automatic prize drawing operations.
-contract Lottery is VRFConsumerBaseV2Plus {
+contract Lottery is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
     // ================================================================
     // │                           Errors                             │
     // ================================================================
     error Lottery__SendMoreToEnter();
     error Lottery__NotOpen();
+    error Lottery__TransferError();
+    error Lottery__UpkeepNotNeeded();
 
     // ================================================================
     // │                       Type Declarations                      │
@@ -26,10 +29,16 @@ contract Lottery is VRFConsumerBaseV2Plus {
     // ================================================================
     // │                       Storage Variables                      │
     // ================================================================
-    uint256 private immutable i_entranceFee;
     LotteryState private s_lotteryState;
+    uint256 private immutable i_entranceFee;
     uint256 private s_rewardBalance;
     address payable[] private s_players;
+    address private s_recentWinner;
+    mapping(address winner => uint256 balance) s_winnerBalance;
+
+    // Chainlink Automation
+    uint256 public immutable i_interval;
+    uint256 public s_lastTimeStamp;
 
     // Chainlink VRF
     uint256 private immutable i_subscriptionId;
@@ -43,6 +52,8 @@ contract Lottery is VRFConsumerBaseV2Plus {
     // ================================================================
     event LotteryEntered(address player);
     event LotteryRequested(uint256 requestId);
+    event WinnerPicked(address winner, uint256 rewardBal);
+    event RewardReceived(address winner, uint256 rewardBal);
 
     // ================================================================
     // │                          Constructor                         │
@@ -52,13 +63,15 @@ contract Lottery is VRFConsumerBaseV2Plus {
         uint256 subscriptionId,
         address vrfCoordinator,
         bytes32 keyHash,
-        uint32 callbackGasLimit
+        uint32 callbackGasLimit,
+        uint256 automationInterval
     ) VRFConsumerBaseV2Plus(vrfCoordinator) {
         i_entranceFee = entranceFee;
         s_lotteryState = LotteryState.OPEN; // Lottery will be open on deploy
         i_subscriptionId = subscriptionId;
         i_keyHash = keyHash;
         i_callbackGasLimit = callbackGasLimit;
+        i_interval = automationInterval;
     }
 
     // ================================================================
@@ -80,11 +93,63 @@ contract Lottery is VRFConsumerBaseV2Plus {
         emit LotteryEntered(msg.sender);
     }
 
-    function requestLottery() public returns (uint256 requestId) {
-        if (s_lotteryState != LotteryState.OPEN) {
-            revert Lottery__NotOpen();
+    function withdrawReward() public {
+        uint256 winnerBal = s_winnerBalance[msg.sender];
+
+        (bool sent,) = payable(msg.sender).call{value: winnerBal}("");
+        if (!sent) {
+            revert Lottery__TransferError();
         }
 
+        s_winnerBalance[msg.sender] = 0;
+
+        emit RewardReceived(msg.sender, winnerBal);
+    }
+
+    // ================================================================
+    // │                    Automation Functions                      │
+    // ================================================================
+    function checkUpkeep(bytes memory /* checkData */ )
+        public
+        view
+        override
+        returns (bool upkeepNeeded, bytes memory /* performData */ )
+    {
+        bool timePassed = (block.timestamp - s_lastTimeStamp) > i_interval;
+        bool hasPlayer = s_players.length > 0;
+        bool isLotteryOpen = s_lotteryState == LotteryState.OPEN;
+        upkeepNeeded = (timePassed && hasPlayer && isLotteryOpen);
+
+        return (upkeepNeeded, "0x0");
+    }
+
+    function performUpkeep(bytes calldata /* performData */ ) external override {
+        (bool upkeepNeeded,) = checkUpkeep("");
+        if (!upkeepNeeded) {
+            revert Lottery__UpkeepNotNeeded();
+        }
+
+        _requestLottery();
+    }
+
+    // ================================================================
+    // │                    Internal Functions                        │
+    // ================================================================
+    function fulfillRandomWords(uint256, uint256[] calldata randomWords) internal override {
+        uint256 winnerIndex = (randomWords[0] % s_players.length);
+        address winnerAddr = s_players[winnerIndex];
+        uint256 rewardBal = s_rewardBalance;
+
+        s_recentWinner = winnerAddr;
+        delete s_players;
+        s_lotteryState = LotteryState.OPEN;
+        s_winnerBalance[winnerAddr] = rewardBal;
+        s_rewardBalance = 0;
+
+        emit WinnerPicked(winnerAddr, rewardBal);
+    }
+
+    function _requestLottery() internal returns (uint256 requestId) {
         requestId = s_vrfCoordinator.requestRandomWords(
             VRFV2PlusClient.RandomWordsRequest({
                 keyHash: i_keyHash,
@@ -102,14 +167,6 @@ contract Lottery is VRFConsumerBaseV2Plus {
     }
 
     // ================================================================
-    // │                    Internal Functions                        │
-    // ================================================================
-    function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
-        uint256 winnerIndex = (randomWords[0] % s_players.length);
-        address winnerAddr = s_players[winnerIndex];
-    }
-
-    // ================================================================
     // │                     Getter Functions                         │
     // ================================================================
     function getRewardBalance() public view returns (uint256) {
@@ -118,5 +175,9 @@ contract Lottery is VRFConsumerBaseV2Plus {
 
     function getPlayer(uint256 index) public view returns (address payable) {
         return s_players[index];
+    }
+
+    function getLoteryState() public view returns (LotteryState) {
+        return s_lotteryState;
     }
 }

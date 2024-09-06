@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {Test} from "forge-std/Test.sol";
+import {Test, console2} from "forge-std/Test.sol";
+import {Vm} from "forge-std/Vm.sol";
 import {Lottery} from "src/Lottery.sol";
 import {DeployLottery} from "script/DeployLottery.s.sol";
 import {Constants} from "script/Constants.sol";
@@ -32,8 +33,8 @@ contract LotteryTest is Test, Constants {
         // bây giờ nạp LINK vào để thanh toán phí lấy random number nếu đang là local anvil chain
         if (block.chainid == ANVIL_CHAIN_ID) {
             vm.startPrank(msg.sender); // Default sender
-            linkToken.setBalance(msg.sender, 10 ether); // 10 LINK
-            VRFCoordinatorV2_5Mock(config.vrfCoordinator).fundSubscription(config.subscriptionId, 10 ether);
+            linkToken.setBalance(msg.sender, 100 ether); // 10 LINK
+            VRFCoordinatorV2_5Mock(config.vrfCoordinator).fundSubscription(config.subscriptionId, 100 ether);
             VRFCoordinatorV2_5Mock(config.vrfCoordinator).addConsumer(config.subscriptionId, address(lottery));
             vm.stopPrank();
         }
@@ -63,7 +64,7 @@ contract LotteryTest is Test, Constants {
     }
 
     // ================================================================
-    // │                         Automation                           │
+    // │                     Automation & VRF                         │
     // ================================================================
     function test_can_checkUpkeep() public {
         // Return false because time not passed
@@ -98,12 +99,22 @@ contract LotteryTest is Test, Constants {
         vm.prank(USER);
         lottery.enterLottery{value: ENTRANCE_FEE}();
 
+        vm.recordLogs();
         lottery.performUpkeep("");
+        Vm.Log[] memory entries = vm.getRecordedLogs();
+
+        assertEq(entries.length, 2);
+        bytes32 requestId = entries[1].topics[1];
+        console2.logUint(uint256(requestId));
 
         assert(Lottery.LotteryState.CLOSE == lottery.getLoteryState());
-    }
 
-    // ================================================================
-    // │                         Automation                           │
-    // ================================================================
+        VRFCoordinatorV2_5Mock(config.vrfCoordinator).fulfillRandomWords(uint256(requestId), address(lottery));
+
+        assert(Lottery.LotteryState.OPEN == lottery.getLoteryState());
+        assertEq(ENTRANCE_FEE, lottery.getWinnerBalance(USER));
+        assertEq(USER, lottery.getRecentWinner());
+        assertEq(0, lottery.getPlayerLength());
+        assertEq(0, lottery.getRewardBalance());
+    }
 }

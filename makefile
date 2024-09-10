@@ -10,3 +10,6 @@ endif
 
 deploy:
 	@forge script script/DeployLottery.s.sol:DeployLottery $(NETWORK_ARGS)
+
+enter-lottery:
+	@forge script script/Interactions.s.sol:EnterLottery $(NETWORK_ARGS)

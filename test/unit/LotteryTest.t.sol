@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity 0.8.19;
 
 import {Test, console2} from "forge-std/Test.sol";
 import {Vm} from "forge-std/Vm.sol";
@@ -62,7 +62,7 @@ contract LotteryTest is Test, Constants {
 
     function test_can_enterLottery() public {
         vm.expectEmit();
-        emit Lottery.LotteryEntered(USER);
+        emit LotteryEntered(USER);
         vm.prank(USER);
         lottery.enterLottery{value: ENTRANCE_FEE}();
 

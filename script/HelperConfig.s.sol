@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity 0.8.19;
 
 import {Script} from "forge-std/Script.sol";
 import {Constants} from "./Constants.sol";
@@ -30,7 +30,7 @@ contract HelperConfig is Script, Constants {
 
     function getSepoliaNetworkConfig() public pure returns (NetworkConfig memory) {
         return NetworkConfig({
-            subscriptionId: 8814394195559258022317326756562587244149941707711830749661523845280446415580,
+            subscriptionId: 106590533650702096389359900102903972821907773804702910517760447055777228601345,
             vrfCoordinator: 0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B,
             keyHash: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
             linkToken: 0x779877A7B0D9E8603169DdbD7836e478b4624789,

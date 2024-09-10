@@ -40,6 +40,13 @@ contract LotteryTest is Test, Constants {
         }
     }
 
+    modifier skipFork() {
+        if (block.chainid != 31337) {
+            return;
+        }
+        _;
+    }
+
     // ================================================================
     // │                        Enter Lottery                         │
     // ================================================================
@@ -66,7 +73,7 @@ contract LotteryTest is Test, Constants {
     // ================================================================
     // │                     Automation & VRF                         │
     // ================================================================
-    function test_can_checkUpkeep() public {
+    function test_can_checkUpkeep() public skipFork {
         // Return false because time not passed
         (bool upkeepNeeded,) = lottery.checkUpkeep("");
         assert(!upkeepNeeded);
@@ -89,7 +96,7 @@ contract LotteryTest is Test, Constants {
         assert(!upkeepNeeded4);
     }
 
-    function test_can_performUpkeep() public {
+    function test_can_performUpkeep() public skipFork {
         // Revert if conditions not pass
         vm.expectRevert(Lottery.Lottery__UpkeepNotNeeded.selector);
         lottery.performUpkeep("");

@@ -404,6 +404,7 @@ Trong phần này, chúng ta sẽ xây dựng một contract phục vụ cho vi�
 ### Solidity Code Style
 
 - [Chainlink Solidity Style Guide](https://github.com/smartcontractkit/chainlink/blob/develop/contracts/STYLE_GUIDE.md)
+- [Headers](https://github.com/transmissions11/headers)
 
 Layouts of Contract:
 ```solidity
